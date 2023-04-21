@@ -6,7 +6,7 @@
 #    By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/21 20:00:01 by mpuig-ma          #+#    #+#              #
-#    Updated: 2023/04/21 20:14:14 by mpuig-ma         ###   ########.fr        #
+#    Updated: 2023/04/21 20:42:15 by mpuig-ma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ BUILD_DIR	:=	build
 SRC_DIR		:=	src
 LIBFT_DIR	:=	$(SRC_DIR)/libft
 
-LIBFT		:=	libft.a
+LIBFT		:=	$(LIBFT_DIR)/libft.a
 NAME		:=	pipex
 
 CC			:=	gcc
@@ -35,9 +35,9 @@ OS			:=	$(shell uname)
 NOSTYLE		:=	\033[0m
 STYLE		:=	\033[0;32m
 
-SRC_FILES	:=	main.c
-OBJ_FILES	:=	$(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(notdir $(basename $(SRC_FILES)))))
-DEP_FILES	:=	$(addprefix $(BUILD_DIR)/. $(addsuffix .d, $(notdir $(basename $(SRC_FILES)))))
+SRC_FILES	:=	$(SRC_DIR)/main.c
+OBJ_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(notdir $(basename $(SRC_FILES)))))
+DEP_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .d, $(notdir $(basename $(SRC_FILES)))))
 
 .PHONY: clean fclean re all debug
 
