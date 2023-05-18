@@ -6,31 +6,79 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 20:39:10 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/17 21:39:41 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/18 17:10:18 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-#include <unistd.h> /* access, pipe, write */
+#include <unistd.h> /* access, pipe, write, execve */
 #include <fcntl.h> /* open */
 #include <string.h> /* strerror */
+
 #include <errno.h> /* errno */
+#include <paths.h>
 
 #include <stdio.h> /* printf */
 
+int	check(int argc, char **argv);
 int	ft_redirect_fd(char *infile, int fd);
 
 int	main(int argc, char **argv)
+{
+	//char	*infile;
+	//char	*outfile;
+
+	if (argc != 5)
+		exit (0);
+	check(argc, argv);
+	// config() { environ = "..." }
+
+	int fd[2];
+	if (pipe(fd) == -1) { exit (3); }
+	
+	char *newargv[] = {"/bin/echo", "infile", NULL};
+
+	/*
+	int pid1 = fork();
+	if (pid1 < 0) { exit (2); }
+	if (pid1 == 0)
+	{
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		ft_printf("here\n");
+		execve("/bin/echo", newargv, NULL);
+	}
+	*/
+
+	int pid2 = fork();
+	if (pid2 < 0) { exit (4); }
+	if (pid2 == 0)
+	{
+		//dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		execve("/bin/echo", newargv, NULL);
+	}
+
+	close(fd[0]);
+	close(fd[1]);
+	//waitpid(pid1, NULL, 0);
+	waitpid(pid2, NULL, 0);
+	return (0);
+}
+
+int	check(int argc, char **argv)
 {
 	char	*infile;
 	char	*outfile;
 	int		out_fd;
 
-	if (argc != 5) { exit (0); }
+	return (9);
+
 	infile = argv[1];
-	outfile = argv[4];
-	
+	outfile = argv[argc - 1];
 	// check if infile is readable
 	if (access(infile, R_OK) == -1) { perror("Error"); }
 
@@ -47,7 +95,7 @@ int	main(int argc, char **argv)
 	out_fd = open(outfile, O_CREAT|O_TRUNC|O_WRONLY, 0666);
 	if (out_fd == -1) { perror("Error"); }
 	ft_redirect_fd(infile, out_fd);
-	
+
 	return (0);
 }
 
