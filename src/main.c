@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 20:39:10 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/19 11:30:04 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/19 15:43:31 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int	main(int argc, char **argv)
 
 	if (argc != 5)
 		exit (0);
-	check(argc, argv);
+	//check(argc, argv);
+	(void) check;
 	// config() { environ = "..." }
 
 	int fd[2];
@@ -39,27 +40,36 @@ int	main(int argc, char **argv)
 
 	char	**cmd1_argv = ft_split(argv[2], ' ');
 	char	*cmd1 = cmd1_argv[0];
+	char	**cmd2_argv = ft_split(argv[3], ' ');
+	char	*cmd2 = cmd2_argv[0];
+
+	int out_fd = open(argv[4], O_CREAT|O_TRUNC|O_WRONLY, 0666);
+	if (out_fd == -1) { perror("Error"); }
+
+	char	*environ[] = {"PATH=/usr/bin", NULL};
 
 	int pid1 = fork();
 	if (pid1 < 0) { exit (2); }
 	if (pid1 == 0)
 	{
-		dup2(fd[1], STDOUT_FILENO);
+		//dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		execve(cmd1, cmd1_argv, NULL);
+		execve(cmd1, cmd1_argv, environ);
 	}
+
+	waitpid(pid1, NULL, 0);
+	exit(0);
 
 	int pid2 = fork();
 	if (pid2 < 0) { exit (4); }
 	if (pid2 == 0)
 	{
+		ft_printf("cmd2 is %s\n", cmd2);
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		char	**cmd2_argv = ft_split(argv[3], ' ');
-		char	*cmd2 = cmd2_argv[0];
-		execve(cmd2, cmd2_argv, NULL);
+		execve(cmd2, cmd2_argv, environ);
 	}
 
 	close(fd[0]);
@@ -72,13 +82,14 @@ int	main(int argc, char **argv)
 int	check(int argc, char **argv)
 {
 	char	*infile;
-	char	*outfile;
-	int		out_fd;
+	//char	*outfile;
+	//int		out_fd;
+	(void) argc;
 
 	return (9);
 
 	infile = argv[1];
-	outfile = argv[argc - 1];
+	//outfile = argv[argc - 1];
 	// check if infile is readable
 	if (access(infile, R_OK) == -1) { perror("Error"); }
 
@@ -92,9 +103,9 @@ int	check(int argc, char **argv)
 	ft_redirect_fd(infile, STDIN_FILENO);
 
 	// write to outfile
-	out_fd = open(outfile, O_CREAT|O_TRUNC|O_WRONLY, 0666);
-	if (out_fd == -1) { perror("Error"); }
-	ft_redirect_fd(infile, out_fd);
+	//out_fd = open(outfile, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+	//if (out_fd == -1) { perror("Error"); }
+	//ft_redirect_fd(infile, out_fd);
 
 	return (0);
 }
