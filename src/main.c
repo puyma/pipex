@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 20:39:10 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/19 19:01:22 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/19 20:28:15 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,49 +34,60 @@ int	main(int argc, char **argv, const char **envp)
 	int		pid2;
 	int		out_fd;
 
+	(void) outfile;
 	check(argc, argv);
 	infile = argv[1];
 	outfile = argv[4];
-	//ft_redirect_fd(infile, STDIN_FILENO);
-	(void) outfile;
-	if (argc != 5) { exit (0); }
-	if (pipe(fd) == -1) { exit (3); }
 
+	if (argc != 5)
+		exit (0);
+	if (pipe(fd) == -1)
+		exit (3);
+	
+	ft_redirect_fd(infile, fd[1]);
+	//ft_printf("redirect OK\n");
+	
 	const char **cmd1_argv = (const char **) ft_split(argv[2], ' ');
 	const char **cmd2_argv = (const char **) ft_split(argv[3], ' ');
 
+	close(fd[1]);
+
 	pid1 = fork();
 	if (pid1 < 0) { exit (2); }
+
 	if (pid1 == 0)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
+		ft_printf("pid1\n");
+		dup2(fd[0], STDIN_FILENO);
 		ft_execvpe(cmd1_argv[0], cmd1_argv, envp);
+		return (0);
 	}
 	waitpid(pid1, NULL, 0);
+	ft_printf("here\n");
+
 	out_fd = open(argv[4], O_CREAT | O_TRUNC | O_WRONLY, 0666);
-	if (out_fd == -1)
-		perror("Error");
+	if (out_fd == -1) { perror("Error"); }
 
 	pid2 = fork();
-	if (pid2 < 0)
-		exit (4);
+	if (pid2 < 0) { exit (4); }
 	if (pid2 == 0)
 	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		char *buf[1];
-		while (read(STDIN_FILENO, buf, 1) > 0)
-			write(out_fd, buf, 1);
 		close(fd[0]);
+		ft_printf("pid2\n");
+		char *buf[1];
+		while (read(fd[1], buf, 1) > 0)
+		{
+			write(1, buf, 1);
+			write(out_fd, buf, 1);
+		}
+		close(fd[0]);
+		close(fd[1]);
 		ft_execvpe(cmd2_argv[0], cmd2_argv, envp);
 	}
 
+	waitpid(pid2, NULL, 0);
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(pid1, NULL, 0);
-	waitpid(pid2, NULL, 0);
 	return (0);
 }
 
@@ -148,6 +159,7 @@ int	ft_execvpe(const char *cmd, char const *args[], char const *envp[])
 		else
 			cmd = pathcmd;
 	}
+	//ft_printf("executing: %s\n", cmd);
 	ret = execve(cmd, (char *const *)args, (char *const *)envp);
 	return (ret);
 }
