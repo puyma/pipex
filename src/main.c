@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 20:39:10 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/18 17:10:18 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/19 11:30:04 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ int	main(int argc, char **argv)
 
 	int fd[2];
 	if (pipe(fd) == -1) { exit (3); }
-	
-	char *newargv[] = {"/bin/echo", "infile", NULL};
 
-	/*
+	char	**cmd1_argv = ft_split(argv[2], ' ');
+	char	*cmd1 = cmd1_argv[0];
+
 	int pid1 = fork();
 	if (pid1 < 0) { exit (2); }
 	if (pid1 == 0)
@@ -47,24 +47,24 @@ int	main(int argc, char **argv)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		ft_printf("here\n");
-		execve("/bin/echo", newargv, NULL);
+		execve(cmd1, cmd1_argv, NULL);
 	}
-	*/
 
 	int pid2 = fork();
 	if (pid2 < 0) { exit (4); }
 	if (pid2 == 0)
 	{
-		//dup2(fd[0], STDIN_FILENO);
+		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		execve("/bin/echo", newargv, NULL);
+		char	**cmd2_argv = ft_split(argv[3], ' ');
+		char	*cmd2 = cmd2_argv[0];
+		execve(cmd2, cmd2_argv, NULL);
 	}
 
 	close(fd[0]);
 	close(fd[1]);
-	//waitpid(pid1, NULL, 0);
+	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
 	return (0);
 }
