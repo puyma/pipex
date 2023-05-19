@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 15:38:27 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/19 18:04:21 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/19 18:32:19 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,33 +30,20 @@ char	*ft_which(const char *exec, char *path);
 
 int	main(int argc, char **argv, const char **envp)
 {
-	char		*path;
-	char		*cmd;
 	int			pid1;
-	char const	*cmd_args[10];
+	char const	*cmd_args[] = {"ls", "-lh", NULL};
 
-	path = ft_getenv("PATH", envp);
-	if (path == NULL)
-		exit (3);
-	cmd = ft_which("ls", path);
+	(void) argc, (void) argv;
 	pid1 = fork();
 	if (pid1 < 0)
 		exit (2);
 	if (pid1 == 0)
 	{
-		// if file to be executed starts with '/', PATH is ignored
-		// and the file at the end of the pathname is executed.
-		cmd_args[0] = cmd;
-		cmd_args[1] = "-l";
-		cmd_args[2] = NULL;
-		if (ft_execvpe(cmd, cmd_args, envp) == -1)
-			perror("Error");
-		if (execvp(cmd, (char *const *)cmd_args) == -1)
+		if (ft_execvpe(cmd_args[0], cmd_args, envp) == -1)
 			perror("Error");
 	}
 	waitpid(pid1, NULL, 0);
 	return (0);
-	(void) argc, (void) argv;
 }
 
 int	ft_execvpe(const char *cmd, char const *args[], char const *envp[])
@@ -76,10 +63,11 @@ int	ft_execvpe(const char *cmd, char const *args[], char const *envp[])
 		pathcmd = ft_which(cmd, path);
 		if (cmd == NULL)
 			exit (99);
+		else
+			cmd = pathcmd;
 	}
 	ret = execve(cmd, (char *const *)args, (char *const *)envp);
 	return (ret);
-	(void) pathcmd;
 }
 
 char	*ft_which(const char *exec, char *path)
