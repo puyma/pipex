@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/26 16:06:34 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/26 16:26:36 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	main(int argc, char **argv, char **envp)
 		close(fildes[1][0]);
 		close(fildes[2][0]);
 		close(fildes[2][1]);
+		close(STDIN_FILENO);
+		dup(fildes[0][0]);
 		close(STDOUT_FILENO);
 		dup(fildes[1][1]);
 		char **cmd1 = ft_split(argv[2], ' ');
@@ -65,19 +67,18 @@ int	main(int argc, char **argv, char **envp)
 		close(fildes[1][1]);
 		close(fildes[2][0]);
 
-		//close(STDIN_FILENO);
-		//dup(fildes[1][0]);
+		close(STDIN_FILENO);
+		dup(fildes[1][0]);
 		close(STDOUT_FILENO);
 		dup(fildes[2][1]);
-		//char **cmd2 = ft_split(argv[3], ' ');
-		//ft_execvpe(cmd2[0], (const char **) cmd2, (const char **) envp);
+		char **cmd2 = ft_split(argv[3], ' ');
+		ft_execvpe(cmd2[0], (const char **) cmd2, (const char **) envp);
 		while (read(fildes[1][0], buf[1], 1) > 0)
 			write(fildes[2][1], buf[1], 1);
 		close(fildes[1][0]);
 		close(fildes[2][1]);
 		exit(0);
 	}
-
 	waitpid(pid2, NULL, 0);
 	close(fildes[1][0]);
 	close(fildes[2][1]);
