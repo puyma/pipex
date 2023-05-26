@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/26 15:30:00 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/26 15:58:20 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,15 @@ int	main(int argc, char **argv, char **envp)
 	pid1 = fork();
 
 	if (pid1 < 0)
-		ft_exit(0);
+		ft_exit(6);
 	if (pid1 == 0)
 	{
 		close(fildes[0][1]);
 		close(fildes[1][0]);
 		close(fildes[2][0]);
 		close(fildes[2][1]);
+		//char **cmd1 = ft_split(argv[2], ' ');
+		//ft_execvpe(cmd1[0], (const char **) cmd1, (const char **) envp);
 		while (read(fildes[0][0], buf[0], 1) > 0)
 			write(fildes[1][1], buf[0], 1);
 		close(fildes[0][0]);
@@ -55,9 +57,11 @@ int	main(int argc, char **argv, char **envp)
 
 	pid2 = fork();
 	if (pid2 < 0)
-		ft_exit (0);
+		ft_exit (6);
 	if (pid2 == 0)
 	{
+		char **cmd2 = ft_split(argv[3], ' ');
+		ft_execvpe(cmd2[0], (const char **) cmd2, (const char **) envp);
 		close(fildes[0][0]);
 		close(fildes[0][1]);
 		close(fildes[1][1]);
