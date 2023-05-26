@@ -6,12 +6,14 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/26 13:24:58 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/26 15:30:00 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <string.h> /* strndup */
+
+#define HEY write(STDOUT_FILENO, "hey\n", 4);
 
 int		check(int argc, char **argv, char **envp);
 char	*ft_getenv(const char *name, const char **env);
@@ -23,7 +25,7 @@ int	main(int argc, char **argv, char **envp)
 	int		fildes[3][2];
 	char	buf[3][1];
 	pid_t	pid1;
-	int		pid2;
+	pid_t	pid2;
 
 	if (check(argc, argv, envp) == -1 || pipe(fildes[0]) == -1
 		|| pipe(fildes[1]) == -1 || pipe(fildes[2]) == -1
@@ -80,45 +82,30 @@ int	main(int argc, char **argv, char **envp)
 
 int	check(int argc, char **argv, char **envp)
 {
-	char	*infile;
-	char	*path;
-
-	(void) argc;
-	(void) argv;
-	(void) envp;
-	if (argc != 5)
-		return (-1);
-	infile = argv[1];
-	path = ft_getenv("PATH=", (const char **) envp);
-	//use ft_which to get absolute path for each executable (cmd1, cmd2)
-	if (access(infile, R_OK) == -1
-		|| access(argv[2], X_OK) == -1
-		|| access(argv[3], X_OK) == -1)
-		return (-1);
-	return (0);
-}
-
-int	ft_execvpe(const char *cmd, char const *args[], char const *envp[])
-{
 	int		ret;
-	char	*path;
-	char	*pathcmd;
+	char	*cmd[3];
+	char	*temp;
 
-	path = NULL;
-	if (cmd == NULL)
+	ret = 0;
+	cmd[0] = NULL;
+	if (argc != 5 || access(argv[1], R_OK) == -1)
 		return (-1);
-	if (*cmd != '/')
-	{
-		path = ft_getenv("PATH", envp);
-		if (path == NULL)
-			path = _PATH_DEFPATH;
-		pathcmd = ft_which(cmd, path);
-		if (cmd == NULL)
-			exit (99);
-		else
-			cmd = pathcmd;
-	}
-	ret = execve(cmd, (char *const *)args, (char *const *)envp);
+	temp = argv[2];
+	if (ft_strchr(argv[2], ' ') != NULL)
+		temp = strndup(argv[2], ft_strchr(argv[2], ' ') - argv[2]);
+	cmd[1] = ft_which(temp, ft_getenv("PATH=", (const char **) envp));
+	if (temp != argv[2])
+		free(temp);
+	temp = argv[3];
+	if (ft_strchr(argv[3], ' ') != NULL)
+		temp = strndup(argv[3], ft_strchr(argv[3], ' ') - argv[3]);
+	cmd[2] = ft_which(temp, ft_getenv("PATH=", (const char **) envp));
+	if (temp != argv[3])
+		free(temp);
+	if (cmd[1] == NULL || cmd[2] == NULL)
+		ret = -1;
+	free(cmd[1]);
+	free(cmd[2]);
 	return (ret);
 }
 
@@ -167,4 +154,28 @@ char	*ft_getenv(const char *name, const char **env)
 	free(variable);
 	variable = NULL;
 	return (variable);
+}
+
+int	ft_execvpe(const char *cmd, char const *args[], char const *envp[])
+{
+	int		ret;
+	char	*path;
+	char	*pathcmd;
+
+	path = NULL;
+	if (cmd == NULL)
+		return (-1);
+	if (*cmd != '/')
+	{
+		path = ft_getenv("PATH", envp);
+		if (path == NULL)
+			path = _PATH_DEFPATH;
+		pathcmd = ft_which(cmd, path);
+		if (cmd == NULL)
+			exit (99);
+		else
+			cmd = pathcmd;
+	}
+	ret = execve(cmd, (char *const *)args, (char *const *)envp);
+	return (ret);
 }
