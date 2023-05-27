@@ -52,7 +52,7 @@ int	main(int argc, char **argv, char **envp)
 			write(fildes[1][1], buf[0], 1);
 		close(fildes[0][0]);
 		close(fildes[1][1]);
-		exit(0);
+		return(0);
 	}
 	waitpid(pid1, NULL, 0);
 	close(fildes[0][0]);
@@ -77,7 +77,7 @@ int	main(int argc, char **argv, char **envp)
 			write(fildes[2][1], buf[1], 1);
 		close(fildes[1][0]);
 		close(fildes[2][1]);
-		exit(0);
+		return(0);
 	}
 	waitpid(pid2, NULL, 0);
 	close(fildes[1][0]);
