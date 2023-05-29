@@ -6,17 +6,13 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/29 11:38:28 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/29 12:11:33 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <string.h> /* strndup */
 
 static int	check(int argc, char **argv, char **envp);
-char		*ft_getenv(const char *name, const char **env);
-char		*ft_which(const char *exec, char *path);
-int			ft_execvpe(const char *cmd, char const *args[], char const *envp[]);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -99,13 +95,13 @@ static int	check(int argc, char **argv, char **envp)
 		return (-1);
 	temp = argv[2];
 	if (ft_strchr(argv[2], ' ') != NULL)
-		temp = strndup(argv[2], ft_strchr(argv[2], ' ') - argv[2]);
+		temp = ft_strndup(argv[2], ft_strchr(argv[2], ' ') - argv[2]);
 	cmd[1] = ft_which(temp, ft_getenv("PATH=", (const char **) envp));
 	if (temp != argv[2])
 		free(temp);
 	temp = argv[3];
 	if (ft_strchr(argv[3], ' ') != NULL)
-		temp = strndup(argv[3], ft_strchr(argv[3], ' ') - argv[3]);
+		temp = ft_strndup(argv[3], ft_strchr(argv[3], ' ') - argv[3]);
 	cmd[2] = ft_which(temp, ft_getenv("PATH=", (const char **) envp));
 	if (temp != argv[3])
 		free(temp);
@@ -114,53 +110,6 @@ static int	check(int argc, char **argv, char **envp)
 	free(cmd[1]);
 	free(cmd[2]);
 	return (ret);
-}
-
-char	*ft_which(const char *exec, char *path)
-{
-	size_t	dir_len;
-	char	*dir;
-	char	*filename;
-	char	*temp;
-
-	path = ft_strchr(path, '=') + 1;
-	while (path != NULL)
-	{
-		dir_len = ft_strchr(path, ':') - path;
-		dir = strndup(path, dir_len);
-		temp = ft_strjoin(dir, "/");
-		filename = ft_strjoin(temp, exec);
-		free(temp);
-		free(dir);
-		if (access(filename, X_OK) == 0)
-			return (filename);
-		free(filename);
-		path = ft_strchr(path, ':');
-		if (path != NULL)
-			++path;
-	}
-	return (NULL);
-}
-
-char	*ft_getenv(const char *name, const char **env)
-{
-	char	*variable;
-	int		i;
-
-	i = 0;
-	variable = ft_strjoin(name, "=");
-	while (env[i] != NULL)
-	{
-		if (ft_strncmp(env[i], "PATH=", strlen("PATH=")) == 0)
-		{
-			free(variable);
-			return ((char *) env[i]);
-		}
-		++i;
-	}
-	free(variable);
-	variable = NULL;
-	return (variable);
 }
 
 int	ft_execvpe(const char *cmd, char const *args[], char const *envp[])
