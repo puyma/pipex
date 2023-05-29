@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/29 12:27:12 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/29 12:41:05 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,33 @@ static int	do_pid2(int fildes[3][2], char **argv, char **envp);
 int	main(int argc, char **argv, char **envp)
 {
 	int		fildes[3][2];
-	pid_t	pid1;
-	pid_t	pid2;
 
 	if (check(argc, argv, envp) == -1 || pipe(fildes[0]) == -1
 		|| pipe(fildes[1]) == -1 || pipe(fildes[2]) == -1
 		|| file_to_fd(argv[1], fildes[0][1]) == -1)
 		ft_exit (2);
 	close(fildes[0][1]);
-	pid1 = fork();
+	do_pid1(fildes, argv, envp);
+	close(fildes[0][0]);
+	close(fildes[1][1]);
+	do_pid2(fildes, argv, envp);
+	close(fildes[1][0]);
+	close(fildes[2][1]);
+	if (fd_to_file(fildes[2][0], argv[4]) == -1)
+		ft_exit (4);
+	close(fildes[2][0]);
+	close(fildes[2][1]);
+	exit(0);
+}
+
+static int	do_pid1(int fildes[3][2], char **argv, char **envp)
+{
+	char		buf[1];
+	char		**cmd1;
+	const pid_t	pid1 = fork();
+
 	if (pid1 < 0)
 		ft_exit(6);
-	if (pid1 == 0)
-		do_pid1(fildes, argv, envp);
-	/*
 	if (pid1 == 0)
 	{
 		close(fildes[0][1]);
@@ -45,22 +58,23 @@ int	main(int argc, char **argv, char **envp)
 		dup(fildes[1][1]);
 		cmd1 = ft_split(argv[2], ' ');
 		ft_execvpe(cmd1[0], (const char **) cmd1, (const char **) envp);
-		while (read(fildes[0][0], buf[0], 1) > 0)
-			write(fildes[1][1], buf[0], 1);
+		while (read(fildes[0][0], buf, 1) > 0)
+			write(fildes[1][1], buf, 1);
 		close(fildes[0][0]);
 		close(fildes[1][1]);
-		return (0);
 	}
-	*/
 	waitpid(pid1, NULL, 0);
-	close(fildes[0][0]);
-	close(fildes[1][1]);
-	pid2 = fork();
+	return (0);
+}
+
+static int	do_pid2(int fildes[3][2], char **argv, char **envp)
+{
+	char		buf[1];
+	char		**cmd2;
+	const pid_t	pid2 = fork();
+
 	if (pid2 < 0)
-		ft_exit (6);
-	if (pid2 == 0)
-		do_pid2(fildes, argv, envp);
-	/*
+		ft_exit(6);
 	if (pid2 == 0)
 	{
 		close(fildes[0][0]);
@@ -73,64 +87,12 @@ int	main(int argc, char **argv, char **envp)
 		dup(fildes[2][1]);
 		cmd2 = ft_split(argv[3], ' ');
 		ft_execvpe(cmd2[0], (const char **) cmd2, (const char **) envp);
-		while (read(fildes[1][0], buf[1], 1) > 0)
-			write(fildes[2][1], buf[1], 1);
+		while (read(fildes[1][0], buf, 1) > 0)
+			write(fildes[2][1], buf, 1);
 		close(fildes[1][0]);
 		close(fildes[2][1]);
-		return (0);
 	}
-	*/
 	waitpid(pid2, NULL, 0);
-	close(fildes[1][0]);
-	close(fildes[2][1]);
-	if (fd_to_file(fildes[2][0], argv[4]) == -1)
-		ft_exit (4);
-	close(fildes[2][0]);
-	close(fildes[2][1]);
-	exit(0);
-}
-
-static int	do_pid1(int fildes[3][2], char **argv, char **envp)
-{
-	char	buf[1];
-	char	**cmd1;
-
-	close(fildes[0][1]);
-	close(fildes[1][0]);
-	close(fildes[2][0]);
-	close(fildes[2][1]);
-	close(STDIN_FILENO);
-	dup(fildes[0][0]);
-	close(STDOUT_FILENO);
-	dup(fildes[1][1]);
-	cmd1 = ft_split(argv[2], ' ');
-	ft_execvpe(cmd1[0], (const char **) cmd1, (const char **) envp);
-	while (read(fildes[0][0], buf, 1) > 0)
-		write(fildes[1][1], buf, 1);
-	close(fildes[0][0]);
-	close(fildes[1][1]);
-	return (-1);
-}
-
-static int	do_pid2(int fildes[3][2], char **argv, char **envp)
-{
-	char	buf[1];
-	char	**cmd2;
-
-	close(fildes[0][0]);
-	close(fildes[0][1]);
-	close(fildes[1][1]);
-	close(fildes[2][0]);
-	close(STDIN_FILENO);
-	dup(fildes[1][0]);
-	close(STDOUT_FILENO);
-	dup(fildes[2][1]);
-	cmd2 = ft_split(argv[3], ' ');
-	ft_execvpe(cmd2[0], (const char **) cmd2, (const char **) envp);
-	while (read(fildes[1][0], buf, 1) > 0)
-		write(fildes[2][1], buf, 1);
-	close(fildes[1][0]);
-	close(fildes[2][1]);
 	return (0);
 }
 
