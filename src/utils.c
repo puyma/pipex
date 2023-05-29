@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 12:29:19 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/29 12:11:15 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/29 15:42:56 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,16 @@ char	*ft_which(const char *exec, char *path)
 	path = ft_strchr(path, '=') + 1;
 	while (path != NULL)
 	{
-		dir_len = ft_strchr(path, ':') - path;
+		if (ft_strchr(path, ':') == NULL)
+			dir_len = ft_strlen(path);
+		else
+			dir_len = ft_strchr(path, ':') - path;
 		dir = ft_strndup(path, dir_len);
 		temp = ft_strjoin(dir, "/");
 		filename = ft_strjoin(temp, exec);
 		free(temp);
 		free(dir);
-		if (access(filename, X_OK) == 0)
+		if (access(filename, X_OK) == 0 && open(filename, O_DIRECTORY) == -1)
 			return (filename);
 		free(filename);
 		path = ft_strchr(path, ':');
