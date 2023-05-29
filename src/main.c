@@ -6,19 +6,17 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/26 16:26:36 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/29 11:38:28 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <string.h> /* strndup */
 
-#define HEY write(STDOUT_FILENO, "hey\n", 4);
-
-int		check(int argc, char **argv, char **envp);
-char	*ft_getenv(const char *name, const char **env);
-char	*ft_which(const char *exec, char *path);
-int		ft_execvpe(const char *cmd, char const *args[], char const *envp[]);
+static int	check(int argc, char **argv, char **envp);
+char		*ft_getenv(const char *name, const char **env);
+char		*ft_which(const char *exec, char *path);
+int			ft_execvpe(const char *cmd, char const *args[], char const *envp[]);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -26,6 +24,8 @@ int	main(int argc, char **argv, char **envp)
 	char	buf[3][1];
 	pid_t	pid1;
 	pid_t	pid2;
+	char	**cmd1;
+	char	**cmd2;
 
 	if (check(argc, argv, envp) == -1 || pipe(fildes[0]) == -1
 		|| pipe(fildes[1]) == -1 || pipe(fildes[2]) == -1
@@ -33,7 +33,6 @@ int	main(int argc, char **argv, char **envp)
 		ft_exit (2);
 	close(fildes[0][1]);
 	pid1 = fork();
-
 	if (pid1 < 0)
 		ft_exit(6);
 	if (pid1 == 0)
@@ -46,13 +45,13 @@ int	main(int argc, char **argv, char **envp)
 		dup(fildes[0][0]);
 		close(STDOUT_FILENO);
 		dup(fildes[1][1]);
-		char **cmd1 = ft_split(argv[2], ' ');
+		cmd1 = ft_split(argv[2], ' ');
 		ft_execvpe(cmd1[0], (const char **) cmd1, (const char **) envp);
 		while (read(fildes[0][0], buf[0], 1) > 0)
 			write(fildes[1][1], buf[0], 1);
 		close(fildes[0][0]);
 		close(fildes[1][1]);
-		return(0);
+		return (0);
 	}
 	waitpid(pid1, NULL, 0);
 	close(fildes[0][0]);
@@ -66,18 +65,17 @@ int	main(int argc, char **argv, char **envp)
 		close(fildes[0][1]);
 		close(fildes[1][1]);
 		close(fildes[2][0]);
-
 		close(STDIN_FILENO);
 		dup(fildes[1][0]);
 		close(STDOUT_FILENO);
 		dup(fildes[2][1]);
-		char **cmd2 = ft_split(argv[3], ' ');
+		cmd2 = ft_split(argv[3], ' ');
 		ft_execvpe(cmd2[0], (const char **) cmd2, (const char **) envp);
 		while (read(fildes[1][0], buf[1], 1) > 0)
 			write(fildes[2][1], buf[1], 1);
 		close(fildes[1][0]);
 		close(fildes[2][1]);
-		return(0);
+		return (0);
 	}
 	waitpid(pid2, NULL, 0);
 	close(fildes[1][0]);
@@ -89,7 +87,7 @@ int	main(int argc, char **argv, char **envp)
 	exit(0);
 }
 
-int	check(int argc, char **argv, char **envp)
+static int	check(int argc, char **argv, char **envp)
 {
 	int		ret;
 	char	*cmd[3];
