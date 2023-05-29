@@ -1,3 +1,4 @@
 [submodule "src/libft"]
 	path = src/libft
 	url = git@github.com:puyma/libft.git
+	branch = main
