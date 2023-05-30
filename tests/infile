@@ -1,0 +1,15 @@
+total 200
+-rwxr-xr-x  1 mpuig-ma  2022_barcelona    50K May 30 13:14 a.out
+-rw-r--r--  1 mpuig-ma  2022_barcelona     0B May 30 13:14 infile
+lrwxr-xr-x  1 mpuig-ma  2022_barcelona    25B May 23 16:09 symbolic_link -> test_open_symbolic_link.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   296B May 29 15:41 test_access.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   1.8K May 23 18:11 test_child_to_parent.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   226B May 22 18:43 test_dup.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   2.8K May 19 18:32 test_execve.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   351B May 23 15:59 test_fork_wait.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   241B May 26 12:26 test_int_arr.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   240B May 23 16:13 test_open_symbolic_link.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   995B May 19 20:28 test_pathsh.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   856B May 30 13:14 test_pipe_single.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   160B May 30 12:54 test_stdin.c
+-rw-r--r--  1 mpuig-ma  2022_barcelona   152B May 29 12:06 test_strndup.c
