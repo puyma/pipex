@@ -6,7 +6,7 @@
 #    By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/21 20:00:01 by mpuig-ma          #+#    #+#              #
-#    Updated: 2023/05/29 16:11:33 by mpuig-ma         ###   ########.fr        #
+#    Updated: 2023/05/30 15:39:00 by mpuig-ma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ CFLAGS		:=	-Wall -Werror -Wextra
 CFLAGS		+=	-MMD
 LFLAGS		:=	-L./$(LIBFT_DIR) -lft
 DEBUG		:=	-g -fsanitize='address,undefined'
-CFLAGS		+=	$(DEBUG)
+#CFLAGS		+=	$(DEBUG)
 INC			:=	-I$(SRC_DIR) -I$(LIBFT_DIR)/src
 RM			:=	rm -rf
 
