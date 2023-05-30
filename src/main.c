@@ -6,14 +6,14 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/30 15:55:38 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/30 15:58:07 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	ft_execute_command(char *argv, char **envp, int *fd);
-int		check(int argc, char **argv, char **envp);
+static void		ft_execute_command(char *argv, char **envp, int *fd);
+static int		check(int argc, char **argv, char **envp);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 	return (0);
 }
 
-int	check(int argc, char **argv, char **envp)
+static int	check(int argc, char **argv, char **envp)
 {
 	int		ret;
 	char	*cmd[3];
@@ -66,7 +66,7 @@ int	check(int argc, char **argv, char **envp)
 	return (ret);
 }
 
-void	ft_execute_command(char *argv, char **envp, int *fd)
+static void	ft_execute_command(char *argv, char **envp, int *fd)
 {
 	int		fildes[2];
 	char	**cmd;
