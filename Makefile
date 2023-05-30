@@ -6,7 +6,7 @@
 #    By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/21 20:00:01 by mpuig-ma          #+#    #+#              #
-#    Updated: 2023/05/30 15:55:24 by mpuig-ma         ###   ########.fr        #
+#    Updated: 2023/05/30 17:43:03 by mpuig-ma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,12 @@ SRC_FILES	:=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/ft_execvpe.c \
 				$(SRC_DIR)/ft_getenv.c \
 				$(SRC_DIR)/ft_which.c
+
+BONUS_FILES	:=	$(SRC_DIR)/main_bonus.c \
+				$(SRC_DIR)/ft_execvpe.c \
+				$(SRC_DIR)/ft_getenv.c \
+				$(SRC_DIR)/ft_which.c
+
 OBJ_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(notdir $(basename $(SRC_FILES)))))
 DEP_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .d, $(notdir $(basename $(SRC_FILES)))))
 
@@ -46,6 +52,10 @@ DEP_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .d, $(notdir $(basename $(SRC
 
 $(NAME): $(LIBFT) $(OBJ_FILES) $(DEP_FILES) $(SRC_DIR)/$(NAME).h
 	$(CC) $(INC) $(CFLAGS) $(LFLAGS) $(OBJ_FILES) -o $(NAME)
+	@echo "Built $(STYLE)$(basename $@)$(NOSTYLE)"
+
+bonus: $(LIBFT) $(OBJ_FILES) $(DEP_FILES) $(SRC_DIR)/$(NAME).h
+	$(CC) $(INC) $(CFLAGS) $(LFLAGS) $(OBJ_FILES) -o $(basename $@)
 	@echo "Built $(STYLE)$(basename $@)$(NOSTYLE)"
 
 $(LIBFT):
