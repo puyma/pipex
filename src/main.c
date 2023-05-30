@@ -6,13 +6,14 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/30 15:49:03 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/30 15:55:38 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 void	ft_execute_command(char *argv, char **envp, int *fd);
+int		check(int argc, char **argv, char **envp);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -34,6 +35,35 @@ int	main(int argc, char **argv, char **envp)
 		write(STDOUT_FILENO, buf, 1);
 	close(fd);
 	return (0);
+}
+
+int	check(int argc, char **argv, char **envp)
+{
+	int		ret;
+	char	*cmd[3];
+	char	*temp;
+
+	ret = 0;
+	cmd[0] = NULL;
+	if (argc != 5 || access(argv[1], R_OK) == -1)
+		return (-1);
+	temp = argv[2];
+	if (ft_strchr(argv[2], ' ') != NULL)
+		temp = ft_strndup(argv[2], ft_strchr(argv[2], ' ') - argv[2]);
+	cmd[1] = ft_which(temp, ft_getenv("PATH=", (const char **) envp));
+	if (temp != argv[2])
+		free(temp);
+	temp = argv[3];
+	if (ft_strchr(argv[3], ' ') != NULL)
+		temp = ft_strndup(argv[3], ft_strchr(argv[3], ' ') - argv[3]);
+	cmd[2] = ft_which(temp, ft_getenv("PATH=", (const char **) envp));
+	if (temp != argv[3])
+		free(temp);
+	if (cmd[1] == NULL || cmd[2] == NULL)
+		ret = -1;
+	free(cmd[1]);
+	free(cmd[2]);
+	return (ret);
 }
 
 void	ft_execute_command(char *argv, char **envp, int *fd)
