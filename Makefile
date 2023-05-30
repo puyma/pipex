@@ -6,7 +6,7 @@
 #    By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/21 20:00:01 by mpuig-ma          #+#    #+#              #
-#    Updated: 2023/05/30 15:39:00 by mpuig-ma         ###   ########.fr        #
+#    Updated: 2023/05/30 15:55:24 by mpuig-ma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,8 +35,9 @@ OS			:=	$(shell uname)
 NOSTYLE		:=	\033[0m
 STYLE		:=	\033[0;32m
 
-SRC_FILES	:=	$(SRC_DIR)/main.c $(SRC_DIR)/check.c $(SRC_DIR)/utils.c \
-				$(SRC_DIR)/ft_execvpe.c $(SRC_DIR)/ft_getenv.c \
+SRC_FILES	:=	$(SRC_DIR)/main.c \
+				$(SRC_DIR)/ft_execvpe.c \
+				$(SRC_DIR)/ft_getenv.c \
 				$(SRC_DIR)/ft_which.c
 OBJ_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(notdir $(basename $(SRC_FILES)))))
 DEP_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .d, $(notdir $(basename $(SRC_FILES)))))
