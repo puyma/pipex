@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 20:42:24 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/29 16:30:09 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/30 15:30:52 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 
 # include "libft.h"
 
-int		file_to_fd(char *file, int fildes);
-int		fd_to_file(int fildes, char *file);
+# define WR 1
+# define RD 0
+
 void	ft_exit(char *err_str, int err_num);
 char	*ft_getenv(const char *name, const char **env);
 char	*ft_which(const char *exec, char *path);
