@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/30 17:45:37 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:48:03 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static void	execute_command(char *argv, char **envp, int *fd)
 	*fd = fildes[RD];
 }
 
+// here_doc WIP
 static int	check_args(int argc, char **argv, char **envp)
 {
 	int		i;
