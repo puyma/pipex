@@ -6,7 +6,7 @@
 #    By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/21 20:00:01 by mpuig-ma          #+#    #+#              #
-#    Updated: 2023/05/30 17:43:03 by mpuig-ma         ###   ########.fr        #
+#    Updated: 2023/05/31 10:42:21 by mpuig-ma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,14 +48,17 @@ BONUS_FILES	:=	$(SRC_DIR)/main_bonus.c \
 OBJ_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(notdir $(basename $(SRC_FILES)))))
 DEP_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .d, $(notdir $(basename $(SRC_FILES)))))
 
+BOBJ_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .o, $(notdir $(basename $(BONUS_FILES)))))
+BDEP_FILES	=	$(addprefix $(BUILD_DIR)/, $(addsuffix .d, $(notdir $(basename $(BONUS_FILES)))))
+
 .PHONY: clean fclean re all debug
 
 $(NAME): $(LIBFT) $(OBJ_FILES) $(DEP_FILES) $(SRC_DIR)/$(NAME).h
 	$(CC) $(INC) $(CFLAGS) $(LFLAGS) $(OBJ_FILES) -o $(NAME)
 	@echo "Built $(STYLE)$(basename $@)$(NOSTYLE)"
 
-bonus: $(LIBFT) $(OBJ_FILES) $(DEP_FILES) $(SRC_DIR)/$(NAME).h
-	$(CC) $(INC) $(CFLAGS) $(LFLAGS) $(OBJ_FILES) -o $(basename $@)
+bonus: $(LIBFT) $(BOBJ_FILES) $(BDEP_FILES) $(SRC_DIR)/$(NAME).h
+	$(CC) $(INC) $(CFLAGS) $(LFLAGS) $(BOBJ_FILES) -o $(basename $@)
 	@echo "Built $(STYLE)$(basename $@)$(NOSTYLE)"
 
 $(LIBFT):
