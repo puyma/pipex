@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/30 17:48:03 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/31 11:58:19 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,37 @@ static void		execute_command(char *argv, char **envp, int *fd);
 static int		check_args(int argc, char **argv, char **envp);
 static char		*cmd_path(char *argv, const char **envp);
 
+int	write_output(int fd, char *output);
+
 int	main(int argc, char **argv, char **envp)
 {
 	int		i;
 	int		fd;
-	int		outfd;
-	char	buf[1];
 
 	if (check_args(argc, argv, envp) != 0)
 		exit (1);
-	i = 2;
+	// set input
 	fd = open(argv[1], O_RDONLY);
+	i = 2;
 	while (argv[i + 1] != NULL)
 	{
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 		execute_command(argv[i++], envp, &fd);
 	}
-	outfd = open(argv[argc - 1], O_CREAT | O_TRUNC | O_WRONLY, 0666);
+	write_output(fd, argv[argc - 1]);
+	close(fd);
+	return (0);
+}
+
+int	write_output(int fd, char *output)
+{
+	int		outfd;
+	char	buf[1];
+
+	outfd = open(output, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 	while (read(fd, buf, 1) > 0)
 		write(outfd, buf, 1);
-	close(fd);
 	return (0);
 }
 
