@@ -6,7 +6,7 @@
 #    By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/21 20:00:01 by mpuig-ma          #+#    #+#              #
-#    Updated: 2023/05/31 10:42:21 by mpuig-ma         ###   ########.fr        #
+#    Updated: 2023/05/31 17:26:24 by mpuig-ma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,7 @@ SRC_FILES	:=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/ft_which.c
 
 BONUS_FILES	:=	$(SRC_DIR)/main_bonus.c \
+				$(SRC_DIR)/utils_bonus.c \
 				$(SRC_DIR)/ft_execvpe.c \
 				$(SRC_DIR)/ft_getenv.c \
 				$(SRC_DIR)/ft_which.c
