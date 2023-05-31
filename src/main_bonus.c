@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/31 11:58:19 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/31 17:31:52 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,20 @@ static void		execute_command(char *argv, char **envp, int *fd);
 static int		check_args(int argc, char **argv, char **envp);
 static char		*cmd_path(char *argv, const char **envp);
 
-int	write_output(int fd, char *output);
-
 int	main(int argc, char **argv, char **envp)
 {
 	int		i;
 	int		fd;
 
+	if (argc < 5)
+		return (write(2, "pipex: invalid number of arguments\n", 36));
 	if (check_args(argc, argv, envp) != 0)
 		exit (1);
-	// set input
-	fd = open(argv[1], O_RDONLY);
 	i = 2;
+	if (ft_strncmp(argv[1], "here_doc", ft_strlen("here_doc")) == 0)
+		fd = here_doc(argv[i++]);
+	else
+		fd = open(argv[1], O_RDONLY);
 	while (argv[i + 1] != NULL)
 	{
 		dup2(fd, STDIN_FILENO);
@@ -36,17 +38,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	write_output(fd, argv[argc - 1]);
 	close(fd);
-	return (0);
-}
-
-int	write_output(int fd, char *output)
-{
-	int		outfd;
-	char	buf[1];
-
-	outfd = open(output, O_CREAT | O_TRUNC | O_WRONLY, 0666);
-	while (read(fd, buf, 1) > 0)
-		write(outfd, buf, 1);
 	return (0);
 }
 
@@ -78,16 +69,15 @@ static void	execute_command(char *argv, char **envp, int *fd)
 	*fd = fildes[RD];
 }
 
-// here_doc WIP
 static int	check_args(int argc, char **argv, char **envp)
 {
 	int		i;
 	char	*cmd;
 
 	i = 2;
-	if (argc < 5)
-		return (write(2, "pipex: invalid number of arguments\n", 36));
-	if (open(argv[1], O_DIRECTORY) != -1 || access(argv[1], R_OK) != 0)
+	if (ft_strncmp(argv[1], "here_doc", ft_strlen("here_doc")) == 0)
+		++i;
+	else if (open(argv[1], O_DIRECTORY) != -1 || access(argv[1], R_OK) != 0)
 		return (write(2, "pipex: invalid input file\n", 27));
 	while (argv[i] != NULL && i < argc - 1)
 	{

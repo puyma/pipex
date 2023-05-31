@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 20:42:24 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/30 16:35:00 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/05/31 17:26:46 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,9 @@
 char	*ft_getenv(const char *name, const char **env);
 char	*ft_which(const char *exec, char *path);
 int		ft_execvpe(const char *cmd, char const *args[], char const *envp[]);
+
+int		here_doc(char *limiter);
+int		read_stdin(int wr_fd, char *limiter);
+int		write_output(int fd, char *output);
 
 #endif
