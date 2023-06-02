@@ -6,7 +6,7 @@
 /*   By: mpuig-ma <mpuig-ma@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:43:57 by mpuig-ma          #+#    #+#             */
-/*   Updated: 2023/05/30 17:37:56 by mpuig-ma         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:11:42 by mpuig-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static int	check_args(int argc, char **argv, char **envp)
 	char	*cmd;
 
 	i = 2;
-	if (argc < 5)
+	if (argc != 5)
 		return (write(2, "pipex: invalid number of arguments\n", 36));
 	if (open(argv[1], O_DIRECTORY) != -1 || access(argv[1], R_OK) != 0)
 		return (write(2, "pipex: invalid input file\n", 27));
